@@ -8,7 +8,7 @@ const userRegister = async (data) => {
   if (!name || !password || !email || !phone || !address) {
     const err = new Error("All fields are required.");
     err.statusCode = 400;
-    throw err
+    throw err;
   }
   name = name.trim();
   email = email.trim().toLowerCase();
@@ -18,7 +18,7 @@ const userRegister = async (data) => {
   if (existingUser) {
     const err = new Error("User already exists.");
     err.statusCode = 409;
-    throw err
+    throw err;
   }
   const hashedPassword = await bcrypt.hash(password, 10);
   const user = await userModel.create({

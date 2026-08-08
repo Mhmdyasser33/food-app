@@ -15,7 +15,7 @@ app.use(cors(corsOptions))
 app.use(express.json())
 app.use(morgan("dev"))
 app.use("/api/auth" , authRoutes)
-app.use("/api/user" , userRoutes)
+app.use("/api/users" , userRoutes)
 app.use(errorHandler)
 
 app.get("/" , (req , res)=>{

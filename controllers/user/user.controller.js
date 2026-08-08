@@ -1,12 +1,30 @@
-const getUser = async(req , res)=>{
+const {getCurrentUserService, updateCurrentUserService} = require("../../services/user.service")
+const getCurrentUser = async(req , res,next)=>{
     try {
-        res.status(200).json({
-            message:"User data"
-        })
-        
+      const user = await getCurrentUserService(req.user.userId)
+       return res.status(200).json({
+        success : true,
+        data : user
+       }) 
     } catch (error) {
-        next(error)
+        return next(error)
     }
 }
 
-module.exports = getUser
+const updateCurrentUser = async(req , res , next)=>{
+  try {
+    const {name , address , phone} = req.body
+    const user = await updateCurrentUserService(req.user.userId , {name , address , phone})
+    return res.status(200).json({
+      success : true,
+      data : user
+    })
+  } catch (error) {
+    return next(error)
+  }  
+}
+
+module.exports = {
+  getCurrentUser,
+  updateCurrentUser
+}
