@@ -1,5 +1,6 @@
 const userModel = require("../models/user.model");
 const bcrypt = require("bcrypt");
+const  crypto = require("crypto")
 const jwt = require("jsonwebtoken")
 
 
@@ -57,8 +58,57 @@ const userLogin = async(data)=>{
          return token
 }
 
+const userForgotPassword = async(data)=>{
+  let { email } = data 
+   if(!email){
+     const err = new Error("Email is required.");
+     err.statusCode = 400;
+     throw err
+     }
+     const user = await userModel.findOne({email})
+      if(!user){
+         const err = new Error("Invalid email.");
+         err.statusCode = 404;
+         throw err
+      }
+       const resetPasswordToken = crypto.randomBytes(32).toString("hex")
+       const hashResetPasswordToken = crypto.createHash("sha256").update(resetPasswordToken).digest("hex")
+       user.resetPasswordToken = hashResetPasswordToken
+       user.resetPasswordExpires = Date.now() + 15 * 60 * 1000
+        await user.save()
+        return resetPasswordToken
+} 
+
+const userResetPassword = async(data , token)=>{
+  const {password , confirmPassword} = data
+  if(!password || !confirmPassword){
+          const err = new Error("Password and confirm password are required.");
+          err.statusCode = 400;
+          throw err
+        }
+        if(password !== confirmPassword){
+            const err = new Error("Password and confirm password do not match.");
+            err.statusCode = 400;
+            throw err
+        }
+        const hashResetPasswordToken = crypto.createHash("sha256").update(token).digest("hex")
+        const user = await userModel.findOne({resetPasswordToken : hashResetPasswordToken,resetPasswordExpires : {$gt : Date.now()}})
+        if(!user){
+            const err = new Error("Invalid reset password token.");
+            err.statusCode = 404;
+            throw err
+        }
+        user.password = await bcrypt.hash(password, 12)
+        user.resetPasswordToken = undefined
+        user.resetPasswordExpires = undefined
+        await user.save()
+        return user
+}
+
 
 module.exports = {
   userRegister,
-  userLogin
+  userLogin,
+  userForgotPassword,
+  userResetPassword
 };

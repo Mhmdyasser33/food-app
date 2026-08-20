@@ -32,6 +32,14 @@ const userSchema = new mongoose.Schema({
     profile : {
         type : String,
         default : "https://www.flaticon.com/free-icon/user_9308008"
+    },
+    resetPasswordToken : {
+        type : String,
+        select : false
+    },
+    resetPasswordExpires : {
+        type : Date,
+        select : false,
     }
 },{timestamps : true})
 

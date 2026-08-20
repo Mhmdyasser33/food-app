@@ -23,8 +23,6 @@ const updateCurrentUserService =  async(userId ,data)=>{
     }
     return user
 }
-
-
 module.exports = {
     getCurrentUserService,
     updateCurrentUserService
