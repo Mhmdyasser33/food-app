@@ -74,7 +74,7 @@ const userForgotPassword = async(data)=>{
        const resetPasswordToken = crypto.randomBytes(32).toString("hex")
        const hashResetPasswordToken = crypto.createHash("sha256").update(resetPasswordToken).digest("hex")
        user.resetPasswordToken = hashResetPasswordToken
-       user.resetPasswordExpires = Date.now() + 15 * 60 * 1000
+       user.resetPasswordExpires = Date.now() + process.env.RESET_PASSWORD_EXPIRES_IN
         await user.save()
         return resetPasswordToken
 } 
