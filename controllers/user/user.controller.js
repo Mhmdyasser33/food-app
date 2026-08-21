@@ -1,3 +1,4 @@
+const userModel = require("../../models/user.model")
 const {getCurrentUserService, updateCurrentUserService, updatePasswordService} = require("../../services/user.service")
 const getCurrentUser = async(req , res,next)=>{
     try {
@@ -38,8 +39,22 @@ const updatePassword = async(req , res , next)=>{
         return next(error)
     }
 }
+
+const deleteAccount = async(req , res , next)=>{
+  try {
+    await userModel.findByIdAndDelete(req.params.id)
+    res.status(204).json({
+      success : true,
+      message : "Account deleted successfully."
+    })
+    
+  } catch (error) {
+    return next(error)
+  }
+}
 module.exports = {
   getCurrentUser,
   updateCurrentUser,
-  updatePassword
+  updatePassword,
+  deleteAccount
 }
