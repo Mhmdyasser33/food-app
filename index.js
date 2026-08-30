@@ -7,6 +7,7 @@ const morgan = require("morgan")
 const cors = require("cors")
 const errorHandler = require("./middlewares/errorHandler")
 const userRoutes = require("./routes/user/user.route")
+const restaurantRoutes = require("./routes/restaurant/restaurant.route")
 const PORT = process.env.PORT || 5001
 const app = express()
 
@@ -16,6 +17,7 @@ app.use(express.json())
 app.use(morgan("dev"))
 app.use("/api/auth" , authRoutes)
 app.use("/api/users" , userRoutes)
+app.use("/api/restaurants" , restaurantRoutes)
 app.use(errorHandler)
 
 app.get("/" , (req , res)=>{
